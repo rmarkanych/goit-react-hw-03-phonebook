@@ -13,7 +13,17 @@ class App extends React.Component {
     ],
     filter: '',
   };
-
+  componentDidMount() {
+    const contacts = JSON.parse(localStorage.getItem('contacts'));
+    if (contacts) {
+      this.setState({ contacts });
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
   handlerInputChange = e => {
     const { name, value } = e.target;
     this.setState({ [name]: value });
@@ -40,8 +50,8 @@ class App extends React.Component {
       return;
     }
 
-    this.setState(prev => ({
-      contacts: [...prev.contacts, dataContacts],
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, dataContacts],
     }));
 
     e.currentTarget.elements.name.value = '';
@@ -49,8 +59,8 @@ class App extends React.Component {
   };
 
   removeContact = id => {
-    this.setState(prev => ({
-      contacts: prev.contacts.filter(el => el.id !== id),
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(el => el.id !== id),
     }));
   };
 
